@@ -1,1 +1,1442 @@
-<h1> Web Can Alabriga Salles</h1>
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sant Pol Luxury Hotel | Experiencia Mediterránea</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#E0CE7E",
+                        "primary-espresso": "#362821",
+                        "accent-gold": "#E0CE7E",
+                        "warm-sand": "#E8BAA0",
+                        "background-light": "#362821",
+                        "background-dark": "#362821",
+                        "sand": "#E8BAA0",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem",
+                        "md": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            }
+            .serif-text { font-family: 'Playfair Display', serif; }
+            .glass-nav {
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+            }
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        }
+    </style>
+</head>
+<body class="bg-primary-espresso text-white antialiased transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Navigation = () => {
+            const navigate = useNavigate();
+            const location = useLocation();
+            const [showServices, setShowServices] = useState(false);
+
+            const navClass = "fixed top-0 left-0 right-0 z-50 bg-primary-espresso/90 backdrop-blur-md border-b border-accent-gold/20 px-6 lg:px-20 py-4 flex items-center justify-between";
+
+            const linkClass = (path) => {
+                const isActive = location.pathname === path;
+                return `text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${isActive ? 'text-accent-gold' : 'text-white/70 hover:text-accent-gold'}`;
+            };
+
+            const privateServices = [
+                { title: 'Traslado Estación', desc: 'Traslado privado desde la estación de tren.' },
+                { title: 'Traslado Aeropuerto', desc: 'Recogida VIP en el aeropuerto.' },
+                { title: 'Servicio Botones', desc: 'Atención personalizada de equipaje.' },
+                { title: 'Regalos Bienvenida', desc: 'Detalles exclusivos en su suite.' }
+            ];
+
+            return (
+                <header className={navClass}>
+                    <div className="flex items-center gap-3">
+                        <Link to="/" className="flex items-center group gap-3">
+                            <div className="relative flex flex-col items-center">
+                                <svg className="w-8 h-8 text-accent-gold transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M22 20H2" />
+                                    <path d="M7 20V4l10 16" />
+                                    <path d="M11 20V9l4 11" />
+                                </svg>
+                                <div className="absolute -bottom-1 left-0 w-full h-[0.5px] bg-accent-gold/30"></div>
+                            </div>
+                            <h2 className="text-[13px] font-medium serif-text uppercase tracking-[0.3em] text-white leading-tight">
+                                Can Alàbriga <br/> <span className="text-[10px] tracking-[0.5em] text-accent-gold">Sallés</span>
+                            </h2>
+                        </Link>
+                    </div>
+                    <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+                        <Link className={linkClass('/')} to="/">Home</Link>
+                        <Link className={linkClass('/habitaciones')} to="/habitaciones">Habitaciones</Link>
+                        <Link className={linkClass('/gastronomia')} to="/gastronomia">Gastronomía</Link>
+                        <Link className={linkClass('/eventos')} to="/eventos">Eventos</Link>
+                        <Link className={linkClass('/galeria')} to="/galeria">Galería</Link>
+                        <Link className={linkClass('/actividades')} to="/actividades">Actividades</Link>
+                        <Link className={linkClass('/regala')} to="/regala">Regala</Link>
+                        
+                        <div className="relative group">
+                            <button 
+                                onClick={() => setShowServices(!showServices)}
+                                className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/70 hover:text-accent-gold flex items-center gap-1"
+                            >
+                                Servicios Privados <span className="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                            <div className="absolute top-full left-0 w-64 bg-primary-espresso border border-accent-gold/20 mt-4 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all p-4 shadow-2xl">
+                                {privateServices.map(s => (
+                                    <div key={s.title} className="mb-4 last:mb-0">
+                                        <h4 className="text-accent-gold text-[10px] font-bold uppercase mb-1">{s.title}</h4>
+                                        <p className="text-white/50 text-[10px] mb-2">{s.desc}</p>
+                                        <button className="text-[9px] text-accent-gold underline uppercase font-black">Solicitar</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </nav>
+                    <div className="flex items-center gap-4">
+                        <button 
+                            onClick={() => navigate('/habitaciones')}
+                            className="bg-accent-gold text-primary-espresso px-6 py-2 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-white transition-all"
+                        >
+                            Reservar
+                        </button>
+                    </div>
+                </header>
+            );
+        };
+
+        const Footer = ({ variant = 'standard' }) => {
+            if (variant === 'serif') {
+                return (
+                    <footer className="bg-primary-espresso text-white pt-24 pb-12 px-6 lg:px-40">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
+                            <div className="col-span-1">
+                                <div className="flex items-center gap-3 mb-8">
+                                    <svg className="w-8 h-8 text-accent-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M22 20H2" />
+                                        <path d="M7 20V4l10 16" />
+                                        <path d="M11 20V9l4 11" />
+                                    </svg>
+                                    <h2 className="text-lg font-medium tracking-[0.3em] serif-text uppercase text-white leading-tight">
+                                        Can Alàbriga <br/> <span className="text-xs tracking-[0.5em] text-accent-gold">Sallés</span>
+                                    </h2>
+                                </div>
+                                <p className="text-white/50 text-sm leading-relaxed mb-8 font-light">
+                                    Sant Pol de Mar, Costa Brava.<br/>
+                                    Barcelona, España.
+                                </p>
+                            </div>
+                            <div>
+                                <h6 className="text-xs font-black uppercase tracking-[0.4em] mb-10 text-accent-gold">Navegación</h6>
+                                <ul className="space-y-5 text-sm text-white/60">
+                                    <li><Link className="hover:text-white transition-colors" to="/habitaciones">Habitaciones</Link></li>
+                                    <li><Link className="hover:text-white transition-colors" to="/gastronomia">Gastronomía</Link></li>
+                                    <li><Link className="hover:text-white transition-colors" to="/actividades">Actividades</Link></li>
+                                    <li><Link className="hover:text-white transition-colors" to="/experiencias">Experiencias</Link></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 className="text-xs font-black uppercase tracking-[0.4em] mb-10 text-accent-gold">Soporte</h6>
+                                <ul className="space-y-5 text-sm text-white/60">
+                                    <li><a className="hover:text-white transition-colors" href="#">Contacto</a></li>
+                                    <li><a className="hover:text-white transition-colors" href="#">Privacidad</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 className="text-xs font-black uppercase tracking-[0.4em] mb-10 text-accent-gold">Newsletter</h6>
+                                <div className="flex border-b border-white/20 pb-3">
+                                    <input className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-white/30" placeholder="Su email" type="email"/>
+                                    <button className="text-accent-gold material-symbols-outlined">arrow_forward</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">
+                            <p>© 2024 Lujo Mediterráneo Hotel. Todos los derechos reservados.</p>
+                            <div className="flex gap-10">
+                                <a href="#">Cookies</a>
+                                <a href="#">Legal</a>
+                            </div>
+                        </div>
+                    </footer>
+                );
+            }
+
+            return (
+                <footer className="bg-white dark:bg-background-dark border-t border-[#f0f2f4] dark:border-gray-800 py-12">
+                    <div className="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div className="flex items-center gap-3 opacity-50">
+                            <span className="text-sm font-bold uppercase tracking-widest">Sant Pol Luxury</span>
+                        </div>
+                        <div className="flex gap-8 text-xs text-gray-400 font-medium uppercase tracking-widest">
+                            <a className="hover:text-primary" href="#">Aviso Legal</a>
+                            <a className="hover:text-primary" href="#">Cookies</a>
+                            <a className="hover:text-primary" href="#">Privacidad</a>
+                        </div>
+                        <p className="text-xs text-gray-400">© 2024 Sant Pol Luxury Hotel. All rights reserved.</p>
+                    </div>
+                </footer>
+            );
+        };
+
+        // --- Page Components ---
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="min-h-screen">
+                    <Navigation />
+                    <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+                        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'linear-gradient(rgba(54, 40, 33, 0.3), rgba(54, 40, 33, 0.5)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIJy2Y6FAC0NRpXVfKilbKbqJQGxWvys4B6LBLF7bv4wbHTLn2sENvwdWDBzWBXQrAzvNznGeeY9jGiQ43xBZtXkla-KsvFaiAc75641kSm9YFo0RWWjtPyxgSpY_nonm71uFN5DeYiYkuIhgEWGiN_9-btTqWUmoAQ5EZwyTghAt3t1Feac2Rmr3LmX_sIEmrF2rdVXpaYaAQwIweTy1B4uwa8n84_z79i7oN9N46671u9BFGxWJCs5Omy-_E-waZ2ovp9UyWt3EE")'}}></div>
+                        <div className="relative z-10 text-center px-4 max-w-4xl">
+                            <h2 className="text-white text-5xl md:text-8xl serif-text mb-8 leading-tight">
+                                Lujo frente al <br/> <span className="italic">Mediterráneo</span>
+                            </h2>
+                            <p className="text-white/90 text-lg md:text-xl font-light mb-12 tracking-wide max-w-2xl mx-auto">
+                                Una experiencia de exclusividad incomparable en el corazón de Sant Pol de Mar.
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                                <button onClick={() => navigate('/habitaciones')} className="bg-accent-gold text-primary-espresso px-10 py-5 font-bold tracking-[0.2em] text-xs hover:bg-white transition-all uppercase">
+                                    Explorar suites
+                                </button>
+                                <button onClick={() => navigate('/gastronomia')} className="border border-white text-white px-10 py-5 font-bold tracking-[0.2em] text-xs hover:bg-white/10 transition-all uppercase">
+                                    Descubrir destino
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section className="py-32 px-6 lg:px-40 bg-warm-sand/5">
+                        <div className="max-w-[900px] mx-auto text-center">
+                            <span className="text-accent-gold text-xs font-black uppercase tracking-[0.5em] mb-6 block">Bienvenido al Paraíso</span>
+                            <h2 className="text-white text-4xl md:text-6xl serif-text mb-10">Refugio de Serenidad</h2>
+                            <div className="w-20 h-[1px] bg-accent-gold mx-auto mb-10"></div>
+                            <p className="text-white/80 text-xl leading-relaxed font-light">
+                                Descubra un santuario de paz donde el diseño contemporáneo se fusiona con la belleza eterna de la costa catalana.
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* Sostenibilidad Section */}
+                    <section className="py-32 px-6 lg:px-40 bg-primary-espresso border-y border-accent-gold/10">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-24">
+                                <span className="text-accent-gold text-xs font-black uppercase tracking-[0.5em] mb-6 block">Nuestro compromiso con el entorno</span>
+                                <h2 className="text-white text-4xl md:text-5xl serif-text mb-10 italic">Lujo consciente frente al Mediterráneo</h2>
+                                <p className="text-white/60 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                                    “El verdadero lujo es cuidar del lugar que nos inspira. Nuestro hotel integra prácticas responsables para proteger el entorno, apoyar a la comunidad local y ofrecer una experiencia sostenible sin renunciar al confort.”
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                                {[
+                                    { icon: 'bolt', title: 'Eficiencia energética', desc: 'Uso de sistemas de bajo consumo, iluminación LED y optimización climática para reducir el impacto ambiental.' },
+                                    { icon: 'water_drop', title: 'Consumo responsable de agua', desc: 'Reductores de caudal, reutilización de toallas bajo petición y control inteligente de uso.' },
+                                    { icon: 'local_mall', title: 'Producto local y de temporada', desc: 'Prioridad a proveedores cercanos para reducir huella de carbono y apoyar la economía local.' },
+                                    { icon: 'recycling', title: 'Reducción de plásticos', desc: 'Eliminación de plásticos de un solo uso y sustitución por materiales reciclables o reutilizables.' },
+                                    { icon: 'delete_sweep', title: 'Gestión de residuos', desc: 'Separación selectiva, reciclaje y programas de reducción de desperdicio.' },
+                                    { icon: 'architecture', title: 'Arquitectura integrada', desc: 'Materiales y diseño respetuosos con el paisaje y el entorno natural de Sant Pol.' }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="group p-8 border border-accent-gold/10 hover:border-accent-gold/40 transition-all duration-500 bg-white/5">
+                                        <span className="material-symbols-outlined text-accent-gold text-3xl mb-6 block group-hover:scale-110 transition-transform">{item.icon}</span>
+                                        <h4 className="text-white text-lg font-bold mb-4 tracking-wide uppercase text-[12px]">{item.title}</h4>
+                                        <p className="text-white/50 text-sm font-light leading-relaxed">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="flex flex-col lg:flex-row min-h-[700px] w-full">
+                        <div className="lg:w-1/2 bg-cover bg-center min-h-[500px]" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCagc_dwjTb0Fe6P0r9SsgOl7c-ayHXZCKe87QckKI9sa11KFykUKcIRUXtRHwZgLkssVjigukieR5pu_1jdufBvnkT7E05sweeyujB41D71X9gIEbtkb-wLFH_rWYEm9Aq0Yd-8RB8T-5Ht6Xv5u5o-Bx8TT331WocEKOZlXhLG8mUuJma9fSwTGu1wMpmBjFY6q_d8tFU79nVb8Vr6Q8I8_IaJL58WDnqJ9zuffO09hFsFy7WzHdFS99RI-gZBg6tBLzhaCC1663m")'}}></div>
+                        <div className="lg:w-1/2 bg-warm-sand flex items-center justify-center p-12 lg:p-24">
+                            <div className="max-w-md">
+                                <span className="text-primary-espresso text-xs font-black uppercase tracking-[0.5em] mb-6 block opacity-70">Experiencia Culinaria</span>
+                                <h2 className="text-5xl serif-text mb-8 text-primary-espresso leading-tight">Sabores del Mare Nostrum</h2>
+                                <button onClick={() => navigate('/gastronomia')} className="bg-primary-espresso text-white px-10 py-4 font-black text-[10px] tracking-[0.3em] uppercase hover:bg-white hover:text-primary-espresso transition-all">
+                                    Descubrir Restaurante
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const HabitacionesPage = () => {
+            const [selectedRoom, setSelectedRoom] = useState(null);
+            const [currentImgIndex, setCurrentImgIndex] = useState(0);
+            const [booking, setBooking] = useState({ checkIn: '', checkOut: '', guests: 1 });
+
+            const rooms = [
+                {
+                    id: 3,
+                    name: "Suite Mediterránea Premium",
+                    desc: "Exclusividad elevada con terraza privada y zona lounge integrada.",
+                    longDesc: "Nuestra Suite Mediterránea Premium redefine el concepto de estancia costera. Con 110m², ofrece vistas frontales ininterrumpidas, una amplia zona lounge para el relax y una terraza privada equipada con mobiliario de diseño.",
+                    capacity: 3,
+                    size: "110m²",
+                    bed: "King Size Imperial",
+                    views: "Panorámicas al Mar",
+                    price: 620,
+                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000",
+                    gallery: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1590490359683-658d3d23f972?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=1000"
+                    ]
+                },
+                {
+                    id: 1,
+                    name: "Suite Real Mediterránea",
+                    desc: "La máxima expresión del lujo con vistas infinitas al mar desde su terraza privada.",
+                    longDesc: "Nuestra Suite Real ofrece un espacio de elegancia incomparable. Con 85m², dispone de salón independiente, terraza panorámica y acabados en mármol y maderas nobles.",
+                    capacity: 2,
+                    size: "85m²",
+                    bed: "King Size Premium",
+                    views: "Frontales al Mar",
+                    price: 450,
+                    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000",
+                    gallery: [
+                        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1617325252245-05828469270a?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000"
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Deluxe Terraza Zen",
+                    desc: "Diseño minimalista y calma absoluta en un entorno de luz natural.",
+                    longDesc: "La habitación Deluxe combina funcionalidad y estética contemporánea. Un espacio diáfano diseñado para el descanso profundo con domótica integrada de última generación.",
+                    capacity: 2,
+                    size: "45m²",
+                    bed: "Queen Size",
+                    views: "Jardín y Mar Lateral",
+                    price: 295,
+                    img: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000",
+                    gallery: [
+                        "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1560184897-67f4a3f9a7fa?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1574643156929-51fa098b0394?q=80&w=1000",
+                        "https://images.unsplash.com/photo-1544161515-4af6b1d46dd0?q=80&w=1000"
+                    ]
+                }
+            ];
+
+            const amenities = [
+                { icon: 'water_drop', text: 'Agua mineral premium' },
+                { icon: 'coffee', text: 'Cafetera y tés selectos' },
+                { icon: 'eco', text: 'Amenities orgánicos' },
+                { icon: 'checkroom', text: 'Albornoz y zapatillas' },
+                { icon: 'mail', text: 'Carta de bienvenida' }
+            ];
+
+            const luxuries = ["Ropa de cama de alta gama", "Domótica", "Aislamiento acústico premium", "Servicio de habitaciones 24h", "Limpieza dos veces al día"];
+
+            return (
+                <div className="min-h-screen bg-primary-espresso text-white">
+                    <Navigation />
+                    
+                    {/* Hero */}
+                    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(54, 40, 33, 0.4), rgba(54, 40, 33, 0.7)), url("https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070")'}}></div>
+                        <div className="relative text-center px-6">
+                            <h1 className="text-5xl md:text-7xl serif-text mb-4 italic">Habitaciones & Suites</h1>
+                            <p className="text-accent-gold uppercase tracking-[0.4em] text-xs font-bold">El arte del descanso elevado a la perfección</p>
+                        </div>
+                    </section>
+
+                    {/* Booking Motor */}
+                    <section className="max-w-6xl mx-auto -mt-16 relative z-20 px-6">
+                        <div className="bg-white p-8 shadow-2xl flex flex-wrap lg:flex-nowrap items-end gap-6 text-primary-espresso">
+                            <div className="flex-1 min-w-[200px]">
+                                <label className="block text-[10px] font-black uppercase mb-2 tracking-widest text-primary-espresso/50">Check-In</label>
+                                <input type="date" className="w-full border-b-2 border-primary-espresso/10 focus:border-accent-gold outline-none py-2 text-sm" onChange={(e)=>setBooking({...booking, checkIn: e.target.value})}/>
+                            </div>
+                            <div className="flex-1 min-w-[200px]">
+                                <label className="block text-[10px] font-black uppercase mb-2 tracking-widest text-primary-espresso/50">Check-Out</label>
+                                <input type="date" className="w-full border-b-2 border-primary-espresso/10 focus:border-accent-gold outline-none py-2 text-sm" onChange={(e)=>setBooking({...booking, checkOut: e.target.value})}/>
+                            </div>
+                            <div className="w-32">
+                                <label className="block text-[10px] font-black uppercase mb-2 tracking-widest text-primary-espresso/50">Huéspedes</label>
+                                <select className="w-full border-b-2 border-primary-espresso/10 focus:border-accent-gold outline-none py-2 text-sm bg-transparent" onChange={(e)=>setBooking({...booking, guests: e.target.value})}>
+                                    <option>1</option><option>2</option><option>3</option>
+                                </select>
+                            </div>
+                            <button className="bg-accent-gold text-primary-espresso px-10 py-4 font-black text-xs uppercase tracking-widest hover:bg-primary-espresso hover:text-white transition-all">
+                                Reservar Ahora
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* Grid */}
+                    <section className="max-w-7xl mx-auto px-6 py-24">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                            {rooms.map(room => (
+                                <div key={room.id} className="group cursor-pointer" onClick={() => { setSelectedRoom(room); setCurrentImgIndex(0); }}>
+                                    <div className="aspect-[4/3] overflow-hidden mb-8 relative">
+                                        <img src={room.img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                        <div className="absolute inset-0 bg-primary-espresso/20 group-hover:bg-transparent transition-all"></div>
+                                    </div>
+                                    <h3 className="text-3xl serif-text mb-3 italic">{room.name}</h3>
+                                    <p className="text-white/60 text-sm font-light mb-6 leading-relaxed">{room.desc}</p>
+                                    <div className="flex justify-between items-center border-t border-white/10 pt-6">
+                                        <span className="text-[10px] uppercase tracking-widest font-bold">Capacidad: {room.capacity} personas</span>
+                                        <button className="text-accent-gold text-[10px] font-black uppercase tracking-widest border-b border-accent-gold pb-1">Ver Habitación</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Modal Detalle */}
+                    {selectedRoom && (
+                        <div className="fixed inset-0 z-[100] bg-primary-espresso flex items-center justify-center overflow-y-auto pt-20 animate-in fade-in duration-300">
+                            <div className="max-w-7xl w-full p-6 lg:p-12 relative">
+                                <button onClick={() => setSelectedRoom(null)} className="fixed top-8 right-8 z-[110] bg-primary-espresso/50 backdrop-blur text-accent-gold material-symbols-outlined text-4xl p-2 rounded-full border border-accent-gold/20">close</button>
+                                
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                                    <div className="space-y-6">
+                                        <div className="relative aspect-video overflow-hidden shadow-2xl group/slider">
+                                            <img src={selectedRoom.gallery[currentImgIndex]} className="w-full h-full object-cover transition-opacity duration-500" />
+                                            <button onClick={() => setCurrentImgIndex((prev) => (prev > 0 ? prev - 1 : selectedRoom.gallery.length - 1))} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover/slider:opacity-100 transition-opacity">
+                                                <span className="material-symbols-outlined">chevron_left</span>
+                                            </button>
+                                            <button onClick={() => setCurrentImgIndex((prev) => (prev < selectedRoom.gallery.length - 1 ? prev + 1 : 0))} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover/slider:opacity-100 transition-opacity">
+                                                <span className="material-symbols-outlined">chevron_right</span>
+                                            </button>
+                                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                                                {selectedRoom.gallery.map((_, i) => (
+                                                    <div key={i} className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'w-8 bg-accent-gold' : 'w-2 bg-white/50'}`}></div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-4 gap-4">
+                                            {selectedRoom.gallery.map((img, i) => (
+                                                <div 
+                                                    key={i} 
+                                                    onClick={() => setCurrentImgIndex(i)}
+                                                    className={`cursor-pointer aspect-square overflow-hidden border-2 transition-all ${i === currentImgIndex ? 'border-accent-gold' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                                >
+                                                    <img src={img} className="w-full h-full object-cover" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h2 className="text-5xl serif-text mb-6 italic">{selectedRoom.name}</h2>
+                                        <p className="text-white/70 font-light text-lg mb-10 leading-relaxed">{selectedRoom.longDesc}</p>
+                                        
+                                        <div className="grid grid-cols-2 gap-8 mb-12 py-8 border-y border-white/10">
+                                            <div>
+                                                <p className="text-[10px] text-accent-gold uppercase tracking-[0.2em] font-bold mb-2">Metros Cuadrados</p>
+                                                <p className="text-xl">{selectedRoom.size}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-accent-gold uppercase tracking-[0.2em] font-bold mb-2">Tipo de Cama</p>
+                                                <p className="text-xl">{selectedRoom.bed}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-accent-gold uppercase tracking-[0.2em] font-bold mb-2">Capacidad</p>
+                                                <p className="text-xl">{selectedRoom.capacity} Huéspedes</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-accent-gold uppercase tracking-[0.2em] font-bold mb-2">Vistas</p>
+                                                <p className="text-xl">{selectedRoom.views}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-12">
+                                            <h4 className="text-[10px] text-accent-gold uppercase tracking-[0.3em] font-bold mb-6">Presentes en la habitación</h4>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                {amenities.map(a => (
+                                                    <div key={a.text} className="flex items-center gap-3">
+                                                        <span className="material-symbols-outlined text-accent-gold text-xl">{a.icon}</span>
+                                                        <span className="text-xs text-white/80">{a.text}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-12 bg-white/5 p-8 border-l-2 border-accent-gold">
+                                            <h4 className="text-[10px] text-accent-gold uppercase tracking-[0.3em] font-bold mb-6">Lujos Incluidos</h4>
+                                            <ul className="space-y-3">
+                                                {luxuries.map(l => (
+                                                    <li key={l} className="flex items-center gap-3 text-sm text-white/80 italic">
+                                                        <span className="size-1 bg-accent-gold rounded-full"></span> {l}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="flex items-center justify-between bg-accent-gold p-8 text-primary-espresso">
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase tracking-widest">Desde</p>
+                                                <p className="text-3xl font-bold">{selectedRoom.price}€<span className="text-sm font-normal">/noche</span></p>
+                                            </div>
+                                            <button className="bg-primary-espresso text-white px-8 py-4 font-black text-xs uppercase tracking-widest">Confirmar Reserva</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const GastronomiaPage = () => {
+            return (
+                <div className="min-h-screen">
+                    <Navigation />
+                    <main className="max-w-[1280px] mx-auto pb-20">
+                        <section className="px-6 lg:px-10 py-10">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                                <div className="relative group">
+                                    <div className="aspect-square overflow-hidden rounded-xl shadow-2xl">
+                                        <div className="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-105 transition-transform duration-700" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1hn449wgFV-O1U9vzyoRjuTl5Q_e9IvVYjp_0_Pb4k4s84Y9BxxBEj4-bUZs-tOS1qEsS4CavR9YW9coFGzE015rjuU1yzsP3tb3rJ2dbVoq5NceTe0DH2ukhIfstODIYn9iYDjffctfUfrxIwdjkrqHE8_J1YVly5kIhj2yIQ-_DPGZWna93u00gy4fEx5ajOVzOV_xgr0CfHNnuBu2GIAivOpGgOfS26cbzO-_fC8C-D48QrS02l8dIWT5BF5za65L5vTFVod2d")'}}></div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-8">
+                                    <span className="text-primary font-bold text-sm tracking-widest uppercase">Experiencia Culinaria</span>
+                                    <h1 className="text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">Sabor del Mediterráneo</h1>
+                                    <p className="text-[#636f88] dark:text-gray-400 text-lg leading-relaxed">
+                                        Alta cocina de temporada con productos locales de KM0 en un entorno inmejorable frente al mar.
+                                    </p>
+                                    <div className="flex flex-wrap gap-4">
+                                        <button className="bg-primary text-white px-8 py-4 rounded-lg text-base font-bold transition-all shadow-lg shadow-primary/20">Reservar Mesa</button>
+                                        <button className="border border-primary text-primary px-8 py-4 rounded-lg text-base font-bold">Ver Menú</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="px-6 lg:px-10 py-24">
+                            <div className="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden rounded-3xl group">
+                                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-[2s] group-hover:scale-105" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuADzcFPcG3K01Zosg1j8kQn1g7qzLuJgMjcOF4LolUK7-2mtv25ow8K9SjFgfXoA5NehrUBLae2OiYUfdhNlt8tF79h-Ij8F-_RwD3AC_ff9WHaRJCXimpJarsOHEqgsQnqup9JACxQoonjY4u0n1n23oBWtJwWbCBmLX10PzavFUBO7bSwltFJgofFaLmNXvyZN-KVsMP5YRBnHuIRPn69QUXUFuiACaLv-fR_35rbfHKlSFDksVEpCyb9VgBMC0_wHR8kuriP3x60")'}}></div>
+                                <div className="relative z-10 text-center max-w-2xl px-6">
+                                    <span className="text-white/80 font-medium tracking-[0.3em] uppercase mb-4 block">Bienestar & Relax</span>
+                                    <h2 className="text-white text-5xl md:text-6xl font-black mb-6">Santuario de Calma</h2>
+                                    <button className="bg-white text-primary px-10 py-4 rounded-lg text-base font-bold transition-all">Ver Tratamientos</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="px-6 lg:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                {icon: 'spa', title: 'Spa Signature', desc: 'Masajes terapéuticos.'},
+                                {icon: 'hot_tub', title: 'Circuito Térmico', desc: 'Sauna y piscina de hidromasaje.'},
+                                {icon: 'fitness_center', title: 'Fitness Center', desc: 'Maquinaria de última generación.'},
+                                {icon: 'self_improvement', title: 'Yoga & Pilates', desc: 'Sesiones privadas al amanecer.'},
+                            ].map((item, idx) => (
+                                <div key={idx} className="bg-white dark:bg-background-dark p-8 rounded-xl border border-gray-100 dark:border-gray-800 flex flex-col items-center text-center group hover:shadow-xl transition-all">
+                                    <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span className="material-symbols-outlined !text-3xl">{item.icon}</span>
+                                    </div>
+                                    <h4 className="text-xl font-bold mb-2">{item.title}</h4>
+                                    <p className="text-[#636f88] text-sm font-light">{item.desc}</p>
+                                </div>
+                            ))}
+                        </section>
+                    </main>
+                    <Footer />
+                </div>
+            );
+        };
+
+        const ActividadesPage = () => {
+            const [filter, setFilter] = useState('Todas');
+            
+            const categories = [
+                { id: 'Bienestar', title: 'Bienestar', intro: 'Reconecte con su equilibrio interior en un entorno de paz absoluta y diseño mediterráneo.' },
+                { id: 'Mar', title: 'Mar & Náutica', intro: 'Explore la majestuosidad del Mediterráneo desde nuestra costa privilegiada y calas de aguas cristalinas.' },
+                { id: 'Gastronomia', title: 'Gastronomía', intro: 'Descubra los sabores auténticos y la tradición culinaria local a través de experiencias curadas.' },
+                { id: 'Cultura', title: 'Cultura', intro: 'Sumérjase en la rica historia, el modernismo y la artesanía viva de Sant Pol de Mar.' },
+                { id: 'Aventura', title: 'Aventura', intro: 'Propuestas activas para descubrir los paisajes más salvajes de la Costa Brava.' },
+                { id: 'Privadas', title: 'Privadas', intro: 'El máximo nivel de exclusividad y personalización para momentos inolvidables.' }
+            ];
+
+            const actividades = [
+                // Bienestar
+                { id: 1, cat: 'Bienestar', title: 'Yoga al amanecer frente al mar', desc: 'Sesión guiada en terraza con vistas al Mediterráneo.', duration: '60 min', level: 'Todos', includes: 'Instructor, esterilla, agua infusionada', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop' },
+                { id: 2, cat: 'Bienestar', title: 'Circuito Spa Mediterráneo', desc: 'Piscina climatizada, sauna, vapor y zona relax.', duration: '90 min', level: 'Relajante', includes: 'Acceso total, toalla, infusiones', img: 'https://images.unsplash.com/photo-1544161515-4af6b1d46dd0?q=80&w=1000&auto=format&fit=crop' },
+                { id: 3, cat: 'Bienestar', title: 'Ritual corporal revitalizante', desc: 'Tratamiento corporal con productos naturales locales.', duration: '75 min', level: 'Premium', includes: 'Terapeuta, aceites orgánicos', img: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=1000&auto=format&fit=crop' },
+                
+                // Mar & Náutica
+                { id: 4, cat: 'Mar', title: 'Salida en velero costero', desc: 'Navegación relajada con patrón y bebida a bordo.', duration: '3 h', level: 'Bajo', includes: 'Patrón, aperitivo, bebidas', img: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000&auto=format&fit=crop' },
+                { id: 5, cat: 'Mar', title: 'Paddle surf', desc: 'Exploración tranquila de la línea de costa sobre tabla.', duration: '1 h', level: 'Medio', includes: 'Equipo completo, monitor', img: 'https://images.unsplash.com/photo-1505244380315-32d6ee965ad9?q=80&w=1000&auto=format&fit=crop' },
+                { id: 6, cat: 'Mar', title: 'Snorkel guiado', desc: 'Exploración de la biodiversidad en calas cercanas.', duration: '1.5 h', level: 'Todos', includes: 'Equipo, guía biólogo', img: 'https://images.unsplash.com/photo-1544551763-47a0159f9234?q=80&w=1000&auto=format&fit=crop' },
+
+                // Gastronomía
+                { id: 7, cat: 'Gastronomia', title: 'Taller de cocina mediterránea', desc: 'Elaboración de platos tradicionales con nuestro chef.', duration: '2.5 h', level: 'Iniciación', includes: 'Ingredientes, recetario, cata', img: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=1000&auto=format&fit=crop' },
+                { id: 8, cat: 'Gastronomia', title: 'Cata de vinos del Maresme', desc: 'Selección comentada de las mejores bodegas locales.', duration: '1.5 h', level: 'Cultural', includes: '4 copas, maridaje gourmet', img: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1000&auto=format&fit=crop' },
+                { id: 9, cat: 'Gastronomia', title: 'Desayuno premium frente al mar', desc: 'Servicio exclusivo en terraza privada con vistas.', duration: '1 h', level: 'Exclusivo', includes: 'Menú degustación, zumos naturales', img: 'https://images.unsplash.com/photo-1495214783159-3503fd1b572d?q=80&w=1000&auto=format&fit=crop' },
+
+                // Cultura
+                { id: 10, cat: 'Cultura', title: 'Ruta modernista por Sant Pol', desc: 'Visita guiada por el legado arquitectónico local.', duration: '2 h', level: 'Cultural', includes: 'Guía especializado', img: 'https://images.unsplash.com/photo-1539186607619-df476afe3ff1?q=80&w=1000&auto=format&fit=crop' },
+                { id: 11, cat: 'Cultura', title: 'Excursión a pueblos costeros', desc: 'Descubrimiento de la esencia medieval y marinera.', duration: '4 h', level: 'Fácil', includes: 'Transporte, guía bilingüe', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
+                { id: 12, cat: 'Cultura', title: 'Taller de artesanía local', desc: 'Experiencia práctica con creadores de la comarca.', duration: '2 h', level: 'Creativo', includes: 'Materiales, pieza terminada', img: 'https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=1000&auto=format&fit=crop' },
+
+                // Aventura
+                { id: 13, cat: 'Aventura', title: 'Senderismo costero', desc: 'Rutas panorámicas por los caminos de ronda.', duration: '3 h', level: 'Medio', includes: 'Guía, picnic saludable', img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1000&auto=format&fit=crop' },
+                { id: 14, cat: 'Aventura', title: 'Kayak de mar', desc: 'Travesía guiada por acantilados inaccesibles.', duration: '2 h', level: 'Activo', includes: 'Kayak, equipo, instructor', img: 'https://images.unsplash.com/photo-1544551763-8dd44758c2dd?q=80&w=1000&auto=format&fit=crop' },
+                { id: 15, cat: 'Aventura', title: 'Bicicleta eléctrica', desc: 'Recorridos libres por el interior del Maresme.', duration: '4 h', level: 'Medio', includes: 'e-Bike, casco, mapa digital', img: 'https://images.unsplash.com/photo-1484178863968-31e77aae120d?q=80&w=1000&auto=format&fit=crop' },
+
+                // Privadas
+                { id: 16, cat: 'Privadas', title: 'Chef privado en suite', desc: 'Menú personalizado elaborado y servido en su estancia.', duration: '3 h', level: 'Muy Alto', includes: 'Chef privado, servicio, bodega', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000&auto=format&fit=crop' },
+                { id: 17, cat: 'Privadas', title: 'Paseo en yate privado', desc: 'Experiencia náutica de lujo a medida por la costa.', duration: '4 h', level: 'Exclusivo', includes: 'Yate, tripulación, catering premium', img: 'https://images.unsplash.com/photo-1567896836024-e32517f1df3f?q=80&w=1000&auto=format&fit=crop' },
+                { id: 18, cat: 'Privadas', title: 'Sesión de bienestar privada', desc: 'Masaje o yoga personalizado en la total intimidad.', duration: '90 min', level: 'Personal', includes: 'Instructor o terapeuta privado', img: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?q=80&w=1000&auto=format&fit=crop' },
+                { id: 19, cat: 'Aventura', title: 'Golf & Mini Golf Experience', desc: 'Disfrute de una jornada de precisión y relax en los campos más exclusivos o diversión familiar en nuestro mini golf de diseño.', duration: '2 - 4 h', level: 'Iniciación a Pro', includes: 'Set de palos premium, pelotas, acceso al campo y buggy', price: 'Desde 45€', img: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?q=80&w=1000&auto=format&fit=crop' },
+            ];
+
+            const filteredCategories = filter === 'Todas' ? categories : categories.filter(c => c.id === filter);
+
+            return (
+                <div className="min-h-screen bg-white dark:bg-background-dark animate-in fade-in duration-1000">
+                    <Navigation />
+                    
+                    {/* Hero Section */}
+                    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0">
+                            <img 
+                                src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop" 
+                                className="w-full h-full object-cover scale-105" 
+                                alt="Sant Pol Luxury Actividades" 
+                            />
+                            <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+                        </div>
+                        <div className="relative text-center text-white px-6 max-w-4xl">
+                            <h1 className="text-6xl md:text-8xl serif-text mb-6 italic tracking-tight">Actividades</h1>
+                            <p className="text-xl md:text-2xl font-light tracking-[0.2em] uppercase">Vive la Costa Brava a tu ritmo</p>
+                        </div>
+                    </section>
+
+                    {/* Navigation/Filters */}
+                    <section className="sticky top-[72px] z-40 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+                        <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
+                            <div className="flex items-center justify-center gap-2 md:gap-6 py-5 min-w-max">
+                                {['Todas', ...categories.map(c => c.id)].map(catId => (
+                                    <button 
+                                        key={catId}
+                                        onClick={() => setFilter(catId)}
+                                        className={`px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all duration-300 ${filter === catId ? 'bg-primary text-white shadow-lg' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-primary'}`}
+                                    >
+                                        {catId === 'Todas' ? 'Explorar Todas' : categories.find(c => c.id === catId).title}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Category Sections */}
+                    <main className="max-w-7xl mx-auto px-6 py-24 space-y-40">
+                        {filteredCategories.map(category => (
+                            <section key={category.id} className="scroll-mt-40 animate-in slide-in-from-bottom-10 duration-1000">
+                                <div className="max-w-3xl mb-16">
+                                    <span className="text-primary font-bold text-xs uppercase tracking-[0.4em] mb-4 block">Destacados</span>
+                                    <h2 className="text-4xl md:text-5xl serif-text mb-6 text-primary-espresso dark:text-white">{category.title}</h2>
+                                    <div className="w-16 h-[2px] bg-accent-gold mb-6"></div>
+                                    <p className="text-gray-500 dark:text-gray-400 font-light text-xl leading-relaxed italic">{category.intro}</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                    {actividades.filter(a => a.cat === category.id).map(act => (
+                                        <article key={act.id} className="group flex flex-col bg-white dark:bg-gray-900/50 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                                            <div className="h-72 overflow-hidden relative">
+                                                <img 
+                                                    src={act.img} 
+                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                                                    alt={act.title} 
+                                                />
+                                                <div className="absolute top-5 right-5 bg-white/90 dark:bg-background-dark/90 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-primary shadow-sm backdrop-blur-sm">
+                                                    Nivel {act.level}
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="p-10 flex flex-col flex-grow">
+                                                <h3 className="text-2xl font-bold mb-4 text-primary-espresso dark:text-white leading-tight">{act.title}</h3>
+                                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light mb-8 line-clamp-3 leading-relaxed">
+                                                    {act.desc}
+                                                </p>
+                                                
+                                                <div className="mt-auto space-y-4 border-t border-gray-50 dark:border-gray-800 pt-8">
+                                                    <div className="flex items-center justify-between text-[11px] uppercase tracking-widest font-bold">
+                                                        <span className="text-gray-400">Duración</span>
+                                                        <span className="text-primary-espresso dark:text-white flex items-center gap-2">
+                                                            <span className="material-symbols-outlined text-sm">schedule</span>
+                                                            {act.duration}
+                                                        </span>
+                                                    </div>
+                                                    {act.price && (
+                                                        <div className="flex items-center justify-between text-[11px] uppercase tracking-widest font-bold">
+                                                            <span className="text-gray-400">Precio aprox.</span>
+                                                            <span className="text-primary-espresso dark:text-white">{act.price}</span>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex flex-col gap-2 text-[11px] uppercase tracking-widest font-bold">
+                                                        <span className="text-gray-400">Qué incluye</span>
+                                                        <span className="text-gray-600 dark:text-gray-300 font-medium normal-case tracking-normal text-xs flex items-start gap-2">
+                                                            <span className="material-symbols-outlined text-primary text-sm shrink-0">done_all</span>
+                                                            {act.includes}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <button className="w-full mt-10 bg-primary-espresso text-white dark:bg-white dark:text-primary-espresso py-4 rounded-lg font-black text-[10px] uppercase tracking-[0.3em] hover:bg-primary transition-all shadow-md group-hover:shadow-primary/20">
+                                                    Reservar actividad
+                                                </button>
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+                    </main>
+
+                    {/* Section Call to Action */}
+                    <section className="bg-sand dark:bg-gray-900 py-32 px-6">
+                        <div className="max-w-4xl mx-auto text-center">
+                            <h3 className="text-3xl md:text-5xl serif-text mb-8 text-primary-espresso dark:text-white">¿Desea algo a medida?</h3>
+                            <p className="text-lg text-gray-500 dark:text-gray-400 mb-12 font-light">Nuestro equipo de concierge está a su disposición para diseñar cualquier experiencia personalizada que pueda imaginar.</p>
+                            <button className="border-b-2 border-primary-espresso dark:border-white pb-2 font-bold uppercase tracking-widest text-xs hover:text-primary hover:border-primary transition-all">
+                                Contactar con Concierge
+                            </button>
+                        </div>
+                    </section>
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const RegalaPage = () => {
+            const navigate = useNavigate();
+            const [selectedGift, setSelectedGift] = useState(null);
+            const [purchaseStep, setPurchaseStep] = useState(1); // 1: Select, 2: Personalize, 3: Payment
+            const [giftData, setGiftData] = useState({ format: 'digital', message: '', sender: '', recipient: '' });
+
+            const categories = [
+                { id: 'Bienestar', icon: 'spa', title: 'Bienestar', path: '/actividades' },
+                { id: 'Mar', icon: 'sailing', title: 'Mar & Náutica', path: '/actividades' },
+                { id: 'Gastronomia', icon: 'restaurant', title: 'Gastronomía', path: '/gastronomia' },
+                { id: 'Estancias', icon: 'bed', title: 'Estancias', path: '/habitaciones' },
+                { id: 'Privadas', icon: 'star', title: 'Experiencias Privadas', path: '/experiencias' }
+            ];
+
+            const gifts = [
+                {
+                    id: 1,
+                    cat: 'Bienestar',
+                    name: 'Ritual Spa & Almuerzo',
+                    desc: 'Circuito de aguas y masaje de 30 min seguido de un menú saludable.',
+                    validity: '12 meses',
+                    price: 125,
+                    img: 'https://images.unsplash.com/photo-1544161515-4af6b1d46dd0?q=80&w=1000'
+                },
+                {
+                    id: 2,
+                    cat: 'Mar',
+                    name: 'Sunset en Velero Privado',
+                    desc: 'Navegación exclusiva al atardecer con botella de champagne.',
+                    validity: '12 meses',
+                    price: 350,
+                    img: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000'
+                },
+                {
+                    id: 3,
+                    cat: 'Gastronomia',
+                    name: 'Cena Degustación Estrella',
+                    desc: 'Menú largo y maridado en nuestro restaurante panorámico.',
+                    validity: '6 meses',
+                    price: 180,
+                    img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000'
+                },
+                {
+                    id: 4,
+                    cat: 'Estancias',
+                    name: 'Escapada Romántica Luxury',
+                    desc: 'Noche en Suite Real con desayuno y detalles de bienvenida.',
+                    validity: '12 meses',
+                    price: 590,
+                    img: 'https://images.unsplash.com/photo-1590490359683-658d3d23f972?q=80&w=1000'
+                }
+            ];
+
+            const handlePurchase = () => {
+                setPurchaseStep(3);
+                setTimeout(() => setPurchaseStep(4), 2000); // Simulate payment
+            };
+
+            return (
+                <div className="min-h-screen bg-primary-espresso">
+                    <Navigation />
+                    
+                    {/* Hero */}
+                    <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(54,40,33,0.5), rgba(54,40,33,0.7)), url("https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=2070")'}}></div>
+                        <div className="relative text-center px-6 z-10">
+                            <h1 className="text-5xl md:text-7xl serif-text mb-6 italic text-white">Regala experiencias inolvidables</h1>
+                            <p className="text-accent-gold uppercase tracking-[0.4em] text-xs font-bold">El detalle perfecto frente al Mediterráneo</p>
+                        </div>
+                    </section>
+
+                    {/* Intro */}
+                    <section className="py-20 px-6 max-w-4xl mx-auto text-center">
+                        <p className="text-white/80 text-2xl font-light italic leading-relaxed">
+                            “Convierte cualquier ocasión en un recuerdo eterno. Regala bienestar, gastronomía, aventura o estancias únicas en nuestro hotel.”
+                        </p>
+                    </section>
+
+                    {/* Categories */}
+                    <section className="max-w-7xl mx-auto px-6 mb-24">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            {categories.map(cat => (
+                                <Link 
+                                    key={cat.id} 
+                                    to={cat.path}
+                                    className="border border-accent-gold/20 p-8 text-center hover:bg-white/10 hover:border-accent-gold transition-all cursor-pointer group flex flex-col items-center justify-center relative overflow-hidden"
+                                >
+                                    <span className="material-symbols-outlined text-accent-gold text-4xl mb-4 block group-hover:scale-110 transition-transform duration-500">{cat.icon}</span>
+                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-white mb-2">{cat.title}</h4>
+                                    <span className="text-[8px] text-accent-gold opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">Explorar sección →</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Experience Grid */}
+                    <section className="max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {gifts.map(gift => (
+                                <div key={gift.id} className="bg-white/5 border border-white/10 overflow-hidden group">
+                                    <div className="h-48 overflow-hidden">
+                                        <img src={gift.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    </div>
+                                    <div className="p-6">
+                                        <span className="text-accent-gold text-[9px] font-bold uppercase tracking-widest mb-2 block">{gift.cat}</span>
+                                        <h3 className="text-xl serif-text text-white mb-2">{gift.name}</h3>
+                                        <p className="text-white/50 text-xs mb-4 line-clamp-2">{gift.desc}</p>
+                                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                                            <span className="text-xl font-bold text-white">{gift.price}€</span>
+                                            <button 
+                                                onClick={() => setSelectedGift(gift)}
+                                                className="text-[10px] font-black uppercase tracking-widest text-accent-gold border-b border-accent-gold pb-1"
+                                            >
+                                                Regalar ahora
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Modal Compra */}
+                    {selectedGift && (
+                        <div className="fixed inset-0 z-[100] bg-primary-espresso/95 flex items-center justify-center p-4 overflow-y-auto">
+                            <div className="bg-white text-primary-espresso max-w-4xl w-full rounded-sm overflow-hidden flex flex-col md:flex-row shadow-2xl relative">
+                                <button onClick={() => {setSelectedGift(null); setPurchaseStep(1);}} className="absolute top-4 right-4 z-10 material-symbols-outlined">close</button>
+                                
+                                <div className="md:w-1/3 bg-warm-sand/20 p-8 border-r border-primary-espresso/5">
+                                    <img src={selectedGift.img} className="w-full aspect-square object-cover mb-6 rounded-sm shadow-lg" />
+                                    <h2 className="text-2xl serif-text mb-2 italic">{selectedGift.name}</h2>
+                                    <p className="text-xs text-primary-espresso/60 mb-6">{selectedGift.desc}</p>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase">
+                                            <span className="material-symbols-outlined text-sm">calendar_today</span> Validez: {selectedGift.validity}
+                                        </div>
+                                        <div className="text-2xl font-black">{selectedGift.price}€</div>
+                                    </div>
+                                </div>
+
+                                <div className="md:w-2/3 p-8 md:p-12">
+                                    {purchaseStep === 1 && (
+                                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                                            <h3 className="text-xs font-black uppercase tracking-[0.3em] mb-8 border-b border-primary-espresso/10 pb-4">1. Personalizar Bono</h3>
+                                            <div className="space-y-6">
+                                                <div>
+                                                    <label className="block text-[9px] font-bold uppercase mb-2">Formato del regalo</label>
+                                                    <div className="flex gap-4">
+                                                        <button 
+                                                            onClick={() => setGiftData({...giftData, format: 'digital'})}
+                                                            className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-widest ${giftData.format === 'digital' ? 'bg-primary-espresso text-white border-primary-espresso' : 'border-primary-espresso/20'}`}
+                                                        >Digital (Email)</button>
+                                                        <button 
+                                                            onClick={() => setGiftData({...giftData, format: 'fisico'})}
+                                                            className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-widest ${giftData.format === 'fisico' ? 'bg-primary-espresso text-white border-primary-espresso' : 'border-primary-espresso/20'}`}
+                                                        >Físico (Envío)</button>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <input type="text" placeholder="De parte de..." className="w-full border-b border-primary-espresso/20 py-3 text-sm focus:border-accent-gold outline-none" onChange={(e)=>setGiftData({...giftData, sender: e.target.value})} />
+                                                    <input type="text" placeholder="Para..." className="w-full border-b border-primary-espresso/20 py-3 text-sm focus:border-accent-gold outline-none" onChange={(e)=>setGiftData({...giftData, recipient: e.target.value})} />
+                                                </div>
+                                                <textarea placeholder="Mensaje personalizado..." className="w-full border-b border-primary-espresso/20 py-3 text-sm focus:border-accent-gold outline-none h-24 resize-none" onChange={(e)=>setGiftData({...giftData, message: e.target.value})}></textarea>
+                                                <button onClick={() => setPurchaseStep(2)} className="w-full bg-accent-gold text-primary-espresso py-4 font-black text-xs uppercase tracking-widest hover:bg-primary-espresso hover:text-white transition-all">Continuar al pago</button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {purchaseStep === 2 && (
+                                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                                            <h3 className="text-xs font-black uppercase tracking-[0.3em] mb-8 border-b border-primary-espresso/10 pb-4">2. Datos de Pago</h3>
+                                            <div className="space-y-6">
+                                                <input type="email" placeholder="Su email para la confirmación" className="w-full border-b border-primary-espresso/20 py-3 text-sm outline-none" />
+                                                <div className="bg-gray-50 p-6 border border-gray-100 flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="material-symbols-outlined">credit_card</span>
+                                                        <span className="text-xs font-bold uppercase">Pago Seguro con Tarjeta</span>
+                                                    </div>
+                                                    <div className="flex gap-2 opacity-30">
+                                                        <div className="w-8 h-5 bg-black rounded-sm"></div>
+                                                        <div className="w-8 h-5 bg-blue-600 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <p className="text-[10px] text-primary-espresso/40 italic">Al confirmar, acepta nuestras condiciones de uso y política de cancelación de bonos regalo.</p>
+                                                <button onClick={handlePurchase} className="w-full bg-primary-espresso text-white py-4 font-black text-xs uppercase tracking-widest">Pagar {selectedGift.price}€</button>
+                                                <button onClick={() => setPurchaseStep(1)} className="w-full text-[10px] font-bold uppercase text-primary-espresso/50">Volver</button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {purchaseStep === 3 && (
+                                        <div className="flex flex-col items-center justify-center py-20 text-center animate-pulse">
+                                            <span className="material-symbols-outlined text-6xl text-accent-gold mb-4">sync</span>
+                                            <h3 className="text-xl serif-text">Procesando pago seguro...</h3>
+                                        </div>
+                                    )}
+
+                                    {purchaseStep === 4 && (
+                                        <div className="flex flex-col items-center justify-center py-10 text-center animate-in zoom-in-95 duration-700">
+                                            <span className="material-symbols-outlined text-6xl text-green-600 mb-6">check_circle</span>
+                                            <h3 className="text-3xl serif-text mb-2 italic">¡Regalo Confirmado!</h3>
+                                            <p className="text-sm text-primary-espresso/60 mb-8 max-w-xs">Se ha generado el bono <span className="font-bold text-primary-espresso">LXP-8829-2024</span>. Lo recibirá en su email en unos instantes.</p>
+                                            <div className="p-6 bg-accent-gold/10 border border-accent-gold/20 w-full mb-8">
+                                                <p className="text-[10px] font-black uppercase tracking-widest mb-1 text-accent-gold">Código del bono</p>
+                                                <p className="text-2xl font-mono font-bold">LXP-8829-2024</p>
+                                            </div>
+                                            <button onClick={() => {setSelectedGift(null); setPurchaseStep(1);}} className="bg-primary-espresso text-white px-10 py-4 font-black text-xs uppercase tracking-widest">Finalizar</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const GaleriaPage = () => {
+            const [activeTab, setActiveTab] = useState('Hotel');
+            const [selectedImage, setSelectedImage] = useState(null);
+
+            const tabs = ['Hotel', 'Zonas Comunes', 'Restaurante', 'Platos Estrella', 'Spa & Bienestar', 'Piscina', 'Actividades'];
+
+            const images = [
+                // Hotel
+                { url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000', cat: 'Hotel' },
+                { url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000', cat: 'Hotel' },
+
+                // Zonas Comunes
+                { url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1000', cat: 'Zonas Comunes' },
+                { url: 'https://images.unsplash.com/photo-1590490359683-658d3d23f972?q=80&w=1000', cat: 'Zonas Comunes' },
+
+                // Restaurante
+                { url: 'https://images.unsplash.com/photo-1550966841-3ee5ad60b051?q=80&w=1000', cat: 'Restaurante' },
+                { url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000', cat: 'Restaurante' },
+                { url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1000', cat: 'Restaurante' },
+                { url: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=1000', cat: 'Restaurante' },
+                { url: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000', cat: 'Restaurante' },
+                { url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000', cat: 'Restaurante' },
+
+                // Platos Estrella
+                { url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000', cat: 'Platos Estrella' },
+                { url: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=1000', cat: 'Platos Estrella' },
+                { url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1000', cat: 'Platos Estrella' },
+                { url: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000', cat: 'Platos Estrella' },
+                { url: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=1000', cat: 'Platos Estrella' },
+                { url: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1000', cat: 'Platos Estrella' },
+
+                // Spa & Bienestar
+                { url: 'https://images.unsplash.com/photo-1544161515-4af6b1d46dd0?q=80&w=1000', cat: 'Spa & Bienestar' },
+                { url: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=1000', cat: 'Spa & Bienestar' },
+                { url: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000', cat: 'Spa & Bienestar' },
+                { url: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?q=80&w=1000', cat: 'Spa & Bienestar' },
+                { url: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?q=80&w=1000', cat: 'Spa & Bienestar' },
+                { url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000', cat: 'Spa & Bienestar' },
+
+                // Piscina
+                { url: 'https://images.unsplash.com/photo-1561501900-3701fa6a0864?q=80&w=1000', cat: 'Piscina' },
+                { url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1000', cat: 'Piscina' },
+                { url: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000', cat: 'Piscina' },
+                { url: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1000', cat: 'Piscina' },
+                { url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000', cat: 'Piscina' },
+                { url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000', cat: 'Piscina' },
+
+                // Actividades
+                { url: 'https://images.unsplash.com/photo-1505244380315-32d6ee965ad9?q=80&w=1000', cat: 'Actividades' },
+                { url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000', cat: 'Actividades' },
+                { url: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000', cat: 'Actividades' },
+                { url: 'https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1000', cat: 'Actividades' },
+                { url: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=1000', cat: 'Actividades' },
+                { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1000', cat: 'Actividades' },
+            ];
+
+            const filteredImages = images.filter(img => img.cat === activeTab);
+
+            useEffect(() => {
+                const grid = document.getElementById('gallery-grid');
+                if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, [activeTab]);
+
+            return (
+                <div className="min-h-screen bg-primary-espresso animate-in fade-in duration-700">
+                    <Navigation />
+                    <section className="relative h-[45vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(54, 40, 33, 0.4), rgba(54, 40, 33, 0.6)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIJy2Y6FAC0NRpXVfKilbKbqJQGxWvys4B6LBLF7bv4wbHTLn2sENvwdWDBzWBXQrAzvNznGeeY9jGiQ43xBZtXkla-KsvFaiAc75641kSm9YFo0RWWjtPyxgSpY_nonm71uFN5DeYiYkuIhgEWGiN_9-btTqWUmoAQ5EZwyTghAt3t1Feac2Rmr3LmX_sIEmrF2rdVXpaYaAQwIweTy1B4uwa8n84_z79i7oN9N46671u9BFGxWJCs5Omy-_E-waZ2ovp9UyWt3EE")'}}></div>
+                        <div className="relative z-10 text-center">
+                            <h1 className="text-5xl md:text-7xl serif-text text-white italic">Galería</h1>
+                            <p className="text-accent-gold uppercase tracking-[0.4em] text-[10px] font-bold mt-4">Descubre cada rincón de CAN ALÀBRIGA SALLÉS</p>
+                        </div>
+                    </section>
+
+                    <nav className="sticky top-[73px] z-30 bg-primary-espresso/90 backdrop-blur-md border-b border-white/10">
+                        <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar py-6 flex lg:justify-center gap-8 md:gap-12 min-w-max">
+                            {tabs.map(tab => (
+                                <button 
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'text-accent-gold border-b border-accent-gold' : 'text-white/40 hover:text-white'}`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+
+                    <main id="gallery-grid" className="max-w-7xl mx-auto px-6 py-20 min-h-[600px]">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            {filteredImages.map((img, i) => (
+                                <div 
+                                    key={activeTab + i} 
+                                    className="relative group cursor-pointer overflow-hidden aspect-[4/5] bg-white/5"
+                                    onClick={() => setSelectedImage(img.url)}
+                                >
+                                    <img src={img.url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={`${activeTab} ${i}`} loading="lazy" />
+                                    <div className="absolute inset-0 bg-primary-espresso/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm">
+                                            <span className="material-symbols-outlined text-white text-2xl">zoom_in</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </main>
+
+                    {selectedImage && (
+                        <div className="fixed inset-0 z-[100] bg-primary-espresso/98 flex items-center justify-center p-4 lg:p-12 transition-all animate-in fade-in" onClick={() => setSelectedImage(null)}>
+                            <button className="absolute top-8 right-8 text-white/50 hover:text-white material-symbols-outlined text-4xl transition-colors">close</button>
+                            <img src={selectedImage} className="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-300" />
+                        </div>
+                    )}
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const EventosPage = () => {
+            const [selectedImg, setSelectedImg] = useState(null);
+            
+            const eventImages = [
+                "https://images.unsplash.com/photo-1541532713592-79a0317b6b77?q=80&w=1000", // Conversación
+                "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000", // Brindis
+                "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=1000", // Grupo terraza
+                "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000", // Interactuando
+                "https://images.unsplash.com/photo-1485872232694-a52022d25d9d?q=80&w=1000", // Ambiente social
+                "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1000", // Conversación relax
+                "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=1000", // Grupo elegante
+                "https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?q=80&w=1000"  // Brindis atardecer
+            ];
+
+            return (
+                <div className="min-h-screen bg-primary-espresso">
+                    <Navigation />
+                    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0">
+                            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2070" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-primary-espresso/40 backdrop-blur-[2px]"></div>
+                        </div>
+                        <div className="relative z-10 text-center px-6">
+                            <span className="text-accent-gold text-xs font-black uppercase tracking-[0.5em] mb-6 block">Social & Lifestyle</span>
+                            <h1 className="text-6xl md:text-8xl serif-text text-white italic">Eventos</h1>
+                            <p className="text-white/80 text-xl font-light mt-8 max-w-2xl mx-auto italic">
+                                El escenario perfecto para encuentros exclusivos y momentos compartidos.
+                            </p>
+                        </div>
+                    </section>
+
+                    <main className="max-w-7xl mx-auto px-6 py-32">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {eventImages.map((url, i) => (
+                                <div 
+                                    key={i} 
+                                    onClick={() => setSelectedImg(url)}
+                                    className="aspect-[4/5] overflow-hidden group cursor-pointer relative"
+                                >
+                                    <img src={url} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </main>
+
+                    <section className="py-32 bg-white/5 border-y border-white/10">
+                        <div className="max-w-3xl mx-auto text-center px-6">
+                            <h2 className="text-4xl serif-text text-white mb-8">Exclusividad Relajada</h2>
+                            <p className="text-white/60 font-light text-lg leading-relaxed mb-12 italic">
+                                Diseñamos atmósferas únicas para reuniones sociales, presentaciones privadas y brindis corporativos en un entorno de luz cálida y espacios abiertos.
+                            </p>
+                            <button className="border-b border-accent-gold text-accent-gold px-4 py-2 text-[10px] font-black uppercase tracking-widest hover:text-white hover:border-white transition-all">
+                                Solicitar información
+                            </button>
+                        </div>
+                    </section>
+
+                    {selectedImg && (
+                        <div className="fixed inset-0 z-[100] bg-primary-espresso/95 flex items-center justify-center p-4" onClick={() => setSelectedImg(null)}>
+                            <img src={selectedImg} className="max-w-full max-h-[90vh] object-contain animate-in zoom-in-95 duration-300 shadow-2xl" />
+                        </div>
+                    )}
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const ExperienciasPage = () => {
+            const [filter, setFilter] = useState('Todas');
+            const [selectedExp, setSelectedExp] = useState(null);
+
+            const categories = ['Todas', 'Bienestar', 'Mar & Náutica', 'Gastronomía', 'Cultura', 'Aventura', 'Privadas'];
+            
+            const experiencias = [
+                {
+                    id: 1,
+                    category: 'Mar & Náutica',
+                    title: 'Paseo en velero al atardecer',
+                    desc: 'Navegue por las calas vírgenes de Sant Pol mientras el sol se funde con el horizonte mediterráneo.',
+                    longDesc: 'Una travesía exclusiva a bordo de un velero clásico. Disfrute de la brisa marina, el sonido de las olas y una selección de aperitivos locales mientras contempla uno de los atardeceres más bellos de la Costa Brava. El capitán compartirá historias fascinantes sobre la navegación tradicional en la zona.',
+                    duration: '3 horas',
+                    level: 'Premium',
+                    price: 'Desde 180€ / pers.',
+                    includes: ['Capitán privado', 'Copa de cava', 'Aperitivo gourmet', 'Seguro de navegación'],
+                    ideal: 'Parejas y grupos pequeños buscando exclusividad.',
+                    img: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1494&auto=format&fit=crop'
+                },
+                {
+                    id: 2,
+                    category: 'Bienestar',
+                    title: 'Masaje frente al mar',
+                    desc: 'Conecte con su paz interior bajo una pérgola privada con el sonido rítmico de las olas.',
+                    longDesc: 'Una experiencia sensorial completa que combina técnicas de masaje tailandés y sueco, utilizando aceites esenciales de lavanda y pino mediterráneo. La ubicación frente al acantilado permite una desconexión total del mundo exterior.',
+                    duration: '90 min',
+                    level: 'Relax',
+                    price: '145€',
+                    includes: ['Tratamiento personalizado', 'Infusión orgánica', 'Acceso al Spa posterior'],
+                    ideal: 'Quienes buscan resetear cuerpo y mente.',
+                    img: 'https://images.unsplash.com/photo-1544161515-4af6b1d46dd0?q=80&w=1470&auto=format&fit=crop'
+                },
+                {
+                    id: 3,
+                    category: 'Cultura',
+                    title: 'Ruta privada Costa Brava',
+                    desc: 'Un viaje en el tiempo a través de los pueblos medievales y los rincones que inspiraron a Dalí.',
+                    longDesc: 'Descubra los secretos mejor guardados del Ampurdán con un guía historiador privado. Desde las ruinas griegas de Empúries hasta el encanto de Pals y Peratallada, esta ruta se adapta a sus intereses culturales y artísticos.',
+                    duration: '6 horas',
+                    level: 'Activo',
+                    price: 'Bajo solicitud',
+                    includes: ['Vehículo de lujo con chofer', 'Guía oficial', 'Entradas a museos', 'Almuerzo tradicional'],
+                    ideal: 'Amantes de la historia y el arte.',
+                    img: 'https://images.unsplash.com/photo-1539186607619-df476afe3ff1?q=80&w=1470&auto=format&fit=crop'
+                },
+                {
+                    id: 4,
+                    category: 'Gastronomía',
+                    title: 'Cata de vinos local',
+                    desc: 'Degustación exclusiva de vinos DO Empordà en nuestra bodega subterránea del siglo XVIII.',
+                    longDesc: 'Sumérjase en la cultura enológica de la región. Nuestro sumiller le guiará a través de cinco referencias excepcionales, explicando la influencia de la Tramontana en el carácter de cada uva.',
+                    duration: '2 horas',
+                    level: 'Premium',
+                    price: '65€ / pers.',
+                    includes: ['5 vinos selección', 'Maridaje de quesos locales', 'Dossier de cata'],
+                    ideal: 'Bon vivants y entusiastas del vino.',
+                    img: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1470&auto=format&fit=crop'
+                },
+                {
+                    id: 5,
+                    category: 'Aventura',
+                    title: 'Paddle surf al amanecer',
+                    desc: 'Deslice sobre aguas cristalinas antes de que el mundo despierte en Sant Pol.',
+                    longDesc: 'La forma más pura de empezar el día. Acompañado por un instructor profesional, explorará cuevas marinas accesibles solo desde el agua mientras los primeros rayos de sol iluminan la costa.',
+                    duration: '2 horas',
+                    level: 'Activo',
+                    price: '45€',
+                    includes: ['Equipo completo', 'Instructor', 'Fotos GoPro', 'Desayuno saludable'],
+                    ideal: 'Espíritus activos y amantes de la naturaleza.',
+                    img: 'https://images.unsplash.com/photo-1505244380315-32d6ee965ad9?q=80&w=1374&auto=format&fit=crop'
+                },
+                {
+                    id: 6,
+                    category: 'Privadas',
+                    title: 'Picnic gourmet privado',
+                    desc: 'Una mesa montada exclusivamente para usted en una cala recóndita solo accesible a pie.',
+                    longDesc: 'Nos encargamos de todo: desde el transporte hasta el montaje de un picnic de lujo con mantelería de lino, vajilla fina y un menú degustación preparado por nuestro chef ejecutivo.',
+                    duration: '4 horas',
+                    level: 'Premium',
+                    price: 'Bajo solicitud',
+                    includes: ['Menú degustación', 'Bebidas premium', 'Montaje exclusivo', 'Servicio de asistencia'],
+                    ideal: 'Celebraciones románticas o momentos especiales.',
+                    img: 'https://images.unsplash.com/photo-1590486803833-ffc6f0861fa3?q=80&w=1374&auto=format&fit=crop'
+                }
+            ];
+
+            const filteredExp = filter === 'Todas' ? experiencias : experiencias.filter(e => e.category === filter || (filter === 'Cultura' && e.category === 'Cultura & Territorio'));
+
+            return (
+                <div className="min-h-screen bg-[#fafafc] dark:bg-background-dark">
+                    <Navigation />
+                    
+                    {/* Hero Section */}
+                    <section className="relative h-[85vh] w-full flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <img src="https://images.unsplash.com/photo-1506929197414-4321262d1421?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover scale-105" alt="Experiencias Mediterráneas" />
+                            <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
+                        </div>
+                        <div className="relative z-10 text-center px-6">
+                            <span className="text-accent-gold text-xs font-bold uppercase tracking-[0.5em] mb-4 block animate-pulse">Momentos diseñados solo para ti</span>
+                            <h1 className="text-white text-5xl md:text-8xl serif-text mb-6">Experiencias <br/><span className="italic">Inolvidables</span></h1>
+                            <p className="text-white/80 text-lg md:text-xl font-light max-w-2xl mx-auto mb-10">
+                                Descubre la Costa Brava desde otra perspectiva. Autenticidad, lujo y el espíritu del Mediterráneo en cada detalle.
+                            </p>
+                            <button onClick={() => document.getElementById('grid-exp').scrollIntoView({behavior:'smooth'})} className="material-symbols-outlined text-white text-4xl animate-bounce cursor-pointer">expand_more</button>
+                        </div>
+                    </section>
+
+                    {/* Filter Section */}
+                    <section className="sticky top-[73px] z-30 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800">
+                        <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
+                            <div className="flex items-center justify-between py-6 min-w-max gap-8">
+                                {categories.map(cat => (
+                                    <button 
+                                        key={cat}
+                                        onClick={() => setFilter(cat)}
+                                        className={`text-xs font-black uppercase tracking-[0.2em] transition-all pb-1 border-b-2 ${filter === cat ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Grid Section */}
+                    <section id="grid-exp" className="max-w-7xl mx-auto px-6 py-20">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {filteredExp.map(exp => (
+                                <div 
+                                    key={exp.id}
+                                    className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100 dark:border-gray-800 flex flex-col"
+                                    onClick={() => setSelectedExp(exp)}
+                                >
+                                    <div className="relative h-72 overflow-hidden">
+                                        <img src={exp.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={exp.title} />
+                                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
+                                            {exp.category}
+                                        </div>
+                                    </div>
+                                    <div className="p-8 flex-grow flex flex-col">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <h3 className="text-xl font-bold text-primary-espresso dark:text-white group-hover:text-primary transition-colors">{exp.title}</h3>
+                                            <span className={`text-[10px] font-bold px-2 py-1 rounded border ${exp.level === 'Premium' ? 'border-accent-gold text-accent-gold' : 'border-primary/30 text-primary'}`}>
+                                                {exp.level}
+                                            </span>
+                                        </div>
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm font-light mb-6 line-clamp-2 leading-relaxed">
+                                            {exp.desc}
+                                        </p>
+                                        <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-50 dark:border-gray-800">
+                                            <div className="flex items-center gap-2 text-gray-400">
+                                                <span className="material-symbols-outlined text-sm">schedule</span>
+                                                <span className="text-xs font-medium">{exp.duration}</span>
+                                            </div>
+                                            <span className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                                                Ver experiencia <span className="material-symbols-outlined text-sm">arrow_right_alt</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Modal/Detail View */}
+                    {selectedExp && (
+                        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 lg:p-10">
+                            <div className="absolute inset-0 bg-primary-espresso/60 backdrop-blur-sm" onClick={() => setSelectedExp(null)}></div>
+                            <div className="relative bg-white dark:bg-background-dark w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row">
+                                <button 
+                                    onClick={() => setSelectedExp(null)}
+                                    className="absolute top-6 right-6 z-20 size-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all"
+                                >
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                                
+                                <div className="lg:w-1/2 h-64 lg:h-auto overflow-hidden">
+                                    <img src={selectedExp.img} className="w-full h-full object-cover" alt={selectedExp.title} />
+                                </div>
+                                
+                                <div className="lg:w-1/2 p-8 lg:p-12 overflow-y-auto no-scrollbar">
+                                    <span className="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-4 block">{selectedExp.category}</span>
+                                    <h2 className="text-3xl lg:text-4xl serif-text text-primary-espresso dark:text-white mb-6 leading-tight">{selectedExp.title}</h2>
+                                    
+                                    <p className="text-gray-600 dark:text-gray-400 font-light leading-relaxed mb-8">
+                                        {selectedExp.longDesc}
+                                    </p>
+
+                                    <div className="grid grid-cols-2 gap-8 mb-10 border-y border-gray-100 dark:border-gray-800 py-8">
+                                        <div>
+                                            <h6 className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-2">Incluye</h6>
+                                            <ul className="text-xs space-y-2 text-primary-espresso dark:text-gray-300">
+                                                {selectedExp.includes.map((inc, i) => <li key={i} className="flex items-center gap-2">
+                                                    <span className="size-1 bg-primary rounded-full"></span> {inc}
+                                                </li>)}
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h6 className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-2">Detalles</h6>
+                                            <p className="text-xs font-bold text-primary-espresso dark:text-gray-300 mb-1">Duración: <span className="font-normal">{selectedExp.duration}</span></p>
+                                            <p className="text-xs font-bold text-primary-espresso dark:text-gray-300">Ideal para: <span className="font-normal">{selectedExp.ideal}</span></p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Precio</p>
+                                            <p className="text-xl font-bold text-primary-espresso dark:text-white">{selectedExp.price}</p>
+                                        </div>
+                                        <button className="bg-primary text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                                            Reservar ahora
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <Footer variant="serif" />
+                </div>
+            );
+        };
+
+        const App = () => {
+            // Scroll to top on route change
+            const location = useLocation();
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [location]);
+
+            return (
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/habitaciones" element={<HabitacionesPage />} />
+                    <Route path="/gastronomia" element={<GastronomiaPage />} />
+                    <Route path="/actividades" element={<ActividadesPage />} />
+                    <Route path="/experiencias" element={<ExperienciasPage />} />
+                    <Route path="/regala" element={<RegalaPage />} />
+                    <Route path="/galeria" element={<GaleriaPage />} />
+                    <Route path="/eventos" element={<EventosPage />} />
+                </Routes>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+</body>
+</html>
